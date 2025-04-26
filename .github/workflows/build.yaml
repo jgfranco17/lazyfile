@@ -33,15 +33,16 @@ jobs:
       - name: Run setup
         uses: ./.github/actions/setup-workspace
 
+      - name: Install jq
+        run: |
+          sudo apt-get install jq
+
       - name: Build binary
         run: |
           just tidy
-          go mod download all
-          CGO_ENABLED=0 GOOS=linux go build \
-            -ldflags="-X main.version=0.0.0-ci" \
-            -o ./lazyfile \
-            main.go
-          chmod +x ./lazyfile
+          BASE_VERSION="$(jq -r .version .github/specs.json)"
+          BUILD_VERSION_CI="${BASE_VERSION}-ci"
+          just build "$BUILD_VERSION_CI"
 
       - name: Run binary
         run: |

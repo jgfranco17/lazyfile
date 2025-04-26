@@ -5,6 +5,7 @@
 .github/templates/*
 
 # Binaries for programs and plugins
+lazyfile
 *.exe
 *.exe~
 *.dll

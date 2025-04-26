@@ -28,10 +28,9 @@ view-coverage:
     xdg-open coverage.html
 
 # Build CLI binary
-build:
+build version="0.0.0":
     #!/usr/bin/env bash
     echo "Building {{ PROJECT_NAME }} binary..."
     go mod download all
-    VERSION=$(jq -r .version specs.json)
-    CGO_ENABLED=0 GOOS=linux go build -ldflags="-X main.version=${VERSION}" -o ./{{ PROJECT_NAME }} main.go
+    CGO_ENABLED=0 GOOS=linux go build -ldflags="-X main.version={{ version }}" -o ./{{ PROJECT_NAME }} main.go
     echo "Built binary for {{ PROJECT_NAME }} ${VERSION} successfully!"
