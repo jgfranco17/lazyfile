@@ -9,12 +9,12 @@ import (
 
 const (
 	projectName        = "lazyfile"
-	projectDescription = "LazyFIle: Running local devops with ease."
+	projectDescription = "LazyFile: file navigation in the terminal, made easy"
 )
 
 var (
 	logger  *log.Logger
-	version string = "0.0.0-dev.1"
+	version string = "0.0.0-dev"
 )
 
 func main() {
