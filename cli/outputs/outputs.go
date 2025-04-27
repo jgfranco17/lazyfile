@@ -2,27 +2,15 @@ package outputs
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/fatih/color"
 )
 
-func PrintColoredMessage(textColor string, message string, args ...any) string {
-	var selectedColor color.Attribute
-	switch strings.ToLower(textColor) {
-	case "green":
-		selectedColor = color.FgGreen
-	case "yellow":
-		selectedColor = color.FgYellow
-	case "red":
-		selectedColor = color.FgRed
-	case "blue":
-		selectedColor = color.FgBlue
-	case "cyan":
-		selectedColor = color.FgCyan
-	default:
-		selectedColor = color.FgWhite
+func ColorString(textColor color.Attribute, bold bool, message string, args ...any) string {
+	baseColorFormat := color.New(textColor)
+	if bold {
+		baseColorFormat.Add(color.Bold)
 	}
-	colorFunc := color.New(selectedColor).SprintFunc()
+	colorFunc := baseColorFormat.SprintFunc()
 	return colorFunc(fmt.Sprintf(message, args...))
 }
