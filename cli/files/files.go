@@ -18,8 +18,7 @@ func ListDirectoryContents(entries []Entry, asTree bool) {
 	totalByteSize := 0
 	for idx, entry := range entries {
 		modTime := entry.ModTime.Format(time.RFC822)
-		size := fmt.Sprintf("%10d", entry.Size)
-		totalByteSize += int(entry.Size) / 8
+		totalByteSize += int(entry.Size)
 
 		var name string
 		if entry.IsDir {
@@ -38,7 +37,8 @@ func ListDirectoryContents(entries []Entry, asTree bool) {
 				prefix = fileTreeNonTerminal
 			}
 		}
-		fmt.Printf("%s  %s  %s  %s%s\n", entry.Mode.String(), size, modTime, prefix, name)
+		fileSize := convertBitsToBytesWithUnits(int(entry.Size))
+		fmt.Printf("%s  %s  %s  %s%s\n", entry.Mode.String(), fileSize, modTime, prefix, name)
 	}
 	totalFileSize := convertBitsToBytesWithUnits(totalByteSize)
 	logger.Infof("Found %d directories, %d files (%s data)", dirCount, fileCount, totalFileSize)
@@ -80,26 +80,25 @@ func GetDirectoryContents(path string) ([]Entry, error) {
 	return entries, nil
 }
 
-func convertBitsToBytesWithUnits(bitCount int) string {
-	bytes := bitCount / 8
-	var convertedNumber int
+func convertBitsToBytesWithUnits(byteSize int) string {
 	var units string
-	switch len(strconv.Itoa(bytes)) {
+	factor := 1
+	switch len(strconv.Itoa(byteSize)) {
 	case 3, 4, 5:
-		convertedNumber = bytes / 3
+		factor = 1000
 		units = "KB"
 	case 6, 7, 8:
-		convertedNumber = bytes / 6
+		factor = 1000000
 		units = "MB"
 	case 9, 10, 11:
-		convertedNumber = bytes / 9
+		factor = 1000000000
 		units = "GB"
 	case 12, 13, 14:
-		convertedNumber = bytes / 12
+		factor = 1000000000000
 		units = "TB"
 	default:
-		convertedNumber = bytes
 		units = "B"
 	}
-	return fmt.Sprintf("%d %s", convertedNumber, units)
+	convertedNumber := float64(byteSize / factor)
+	return fmt.Sprintf("%0.1f %s", convertedNumber, units)
 }

@@ -24,7 +24,7 @@ func (f *CustomFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	level := strings.ToUpper(entry.Level.String())
 	timestamp := entry.Time.Format(time.DateTime)
 	colorFunc := color.New(setOutputColorPerLevel(level)).SprintFunc()
-	logMessage := fmt.Sprintf("[%s][%s] %s", timestamp, colorFunc(level), entry.Message)
+	logMessage := fmt.Sprintf("[%s][%s] %s\n", timestamp, colorFunc(level), entry.Message)
 	return []byte(logMessage), nil
 }
 
